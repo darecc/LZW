@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
 public class ByteProgram {
@@ -54,5 +55,16 @@ public class ByteProgram {
             System.out.format("Wsp. kompresji: %.2f %n", wspKomp*100);
             System.out.println(compressed);
             int[] decompressed = lzw.decompress(compressed);
+            Huffman huf = new Huffman();
+            int[] table = new int[compressed.size()];
+            for(int i = 0; i < compressed.size(); i++)
+                table[i] = compressed.get(i);
+            byte[] tab = huf.convertIntToByte(table, sizeInt);
+            System.out.println("Przed kompresja Huffmana rozmiar to: " + tab.length);
+            int[][] histogram = huf.calculateHistogram(tab);
+            int calc = huf.calculateCompressedSize(histogram);
+            System.out.println("Po kompresji Huffmana rozmiar to: " + calc);
+            double compHuff = (double)calc/(double)fileS;
+            System.out.format("Calkowity wsp kompresji: %.2f %n", (1-compHuff)*100);
         }
     }
